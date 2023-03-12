@@ -15,8 +15,7 @@ public class ConverterServiceImpl implements ConverterService{
             .order(ByteOrder.LITTLE_ENDIAN);
     private ByteBuffer lenBuffer = ByteBuffer.allocate(4)
             .order(ByteOrder.LITTLE_ENDIAN);
-    private ByteBuffer byteBuffer = ByteBuffer.allocate(8)
-            .order(ByteOrder.LITTLE_ENDIAN);
+
     @Override
     public byte[] convertToBytes(ServerData serverData) {
         ByteBuffer buffer = ByteBuffer.allocate(12 + serverData.getData().length * 8);
@@ -35,17 +34,19 @@ public class ConverterServiceImpl implements ConverterService{
 
         double time = modelTimeBuf.put(bytes, 4, 8)
                 .rewind()
-                .getDouble(0);
+                .getDouble();
         modelTimeBuf.clear();
 
         int bufLen = lenBuffer.put(bytes, 12, 4)
                 .rewind()
-                .getInt(0);
+                .getInt();
         lenBuffer.clear();
 
         double[] data = new double[bufLen];
+        ByteBuffer byteBuffer = ByteBuffer.allocate(8)
+                .order(ByteOrder.LITTLE_ENDIAN);
         for (int i = 0; i < bufLen; i++) {
-            data[i] = byteBuffer.put(bytes, 16 + i * 8, 8).rewind().getDouble(0);
+            data[i] = byteBuffer.put(bytes, 16 + i * 8, 8).rewind().getDouble();
             byteBuffer.clear();
         }
         byteBuffer.clear();
@@ -54,14 +55,10 @@ public class ConverterServiceImpl implements ConverterService{
 
     private byte[] DoubleArrToByteArr(double[] dArr) {
         int offset = 0;
-        ByteBuffer bytes = ByteBuffer.allocate(dArr.length * 8);
+        ByteBuffer bytes = ByteBuffer.allocate(dArr.length * 8)
+                .order(ByteOrder.LITTLE_ENDIAN);
         for (double v: dArr) {
-            byte[] dv = ByteBuffer.allocate(8)
-                    .order(ByteOrder.LITTLE_ENDIAN)
-                    .putDouble(v)
-                    .array();
-            bytes.put(dv, offset, 8);
-            offset += 8;
+            bytes.putDouble(v);
         }
         return bytes.array();
     }

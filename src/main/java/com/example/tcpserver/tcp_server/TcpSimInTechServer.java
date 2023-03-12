@@ -2,7 +2,7 @@ package com.example.tcpserver.tcp_server;
 
 import com.example.tcpserver.model.ClientData;
 import com.example.tcpserver.model.CommandID;
-import com.example.tcpserver.model.ServerCfg;
+import com.example.tcpserver.configuration.ServerCfg;
 import com.example.tcpserver.model.ServerData;
 import com.example.tcpserver.services.ConverterService;
 import com.example.tcpserver.services.DataProcessingService;
@@ -72,12 +72,10 @@ public class TcpSimInTechServer implements Server {
         try {
             BufferedOutputStream writer = new BufferedOutputStream(clientSocket.getOutputStream(), 20);
             BufferedInputStream reader = new BufferedInputStream(clientSocket.getInputStream(), 24);
-            long modelTime = 0;
             long scheduleStep = config.getScheduleStep();
-            double timeStep = config.getTimeStep();
-            byte[] buffer = new byte[24];
-            ServerData serverData = new ServerData(modelTime, new double[]{0});
-
+            byte[] buffer = new byte[config.getInputBufferSize()];
+            ServerData serverData = processingService.getInitData();
+            processingService.clearBuffer();
             ScheduledExecutorService ses = Executors.newScheduledThreadPool(1);
 
             clientConversation = ses.scheduleWithFixedDelay(() -> {
@@ -89,10 +87,8 @@ public class TcpSimInTechServer implements Server {
                         ClientData clientData = converter.convertFromBytes(buffer);
                         log.info("Received {}", clientData);
                         // Input data processing
-                        double time = serverData.getModelTime() + timeStep;
                         processingService.process(clientData, serverData);
                         // Sending model data
-                        serverData.setModelTime(time);
                         writer.write(converter.convertToBytes(serverData));
                         writer.flush();
                         log.info("Sent {}", serverData);

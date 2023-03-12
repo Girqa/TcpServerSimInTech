@@ -1,5 +1,11 @@
+processing:
+  time-step: 0.001
+  cycle-inputs: 2
+  buffer-type: step
+  buffer-size: 20
+
 tcp-server:
   port: 19000
   auto-start: true
   schedule-step: 1
-  time-step: 0.001
+  input-buffer-size: 32

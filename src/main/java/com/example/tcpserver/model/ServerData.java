@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ServerData {
-    private double modelTime;
+    private double modelTime = 0;
     private double[] data;
 }
