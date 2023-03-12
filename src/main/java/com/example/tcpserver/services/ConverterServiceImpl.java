@@ -17,8 +17,6 @@ public class ConverterServiceImpl implements ConverterService{
             .order(ByteOrder.LITTLE_ENDIAN);
     private ByteBuffer byteBuffer = ByteBuffer.allocate(8)
             .order(ByteOrder.LITTLE_ENDIAN);
-    private ByteBuffer zeroDoubleBuf = ByteBuffer.allocate(8).put(new byte[]{0, 0, 0, 0, 0, 0, 0, 0});
-    private ByteBuffer zeroIntBuf = ByteBuffer.allocate(4).put(new byte[]{0, 0, 0, 0});
     @Override
     public byte[] convertToBytes(ServerData serverData) {
         ByteBuffer buffer = ByteBuffer.allocate(12 + serverData.getData().length * 8);
@@ -35,15 +33,19 @@ public class ConverterServiceImpl implements ConverterService{
     public ClientData convertFromBytes(byte[] bytes) {
         CommandID id = CommandID.commandById(bytes[0]);
 
-        double time = modelTimeBuf.put(bytes, 4, 8).getDouble(0);
-        modelTimeBuf.clear().rewind();
+        double time = modelTimeBuf.put(bytes, 4, 8)
+                .rewind()
+                .getDouble(0);
+        modelTimeBuf.clear();
 
-        int bufLen = lenBuffer.put(bytes, 13, 4).getInt(0);
+        int bufLen = lenBuffer.put(bytes, 12, 4)
+                .rewind()
+                .getInt(0);
         lenBuffer.clear();
 
         double[] data = new double[bufLen];
         for (int i = 0; i < bufLen; i++) {
-            data[i] = byteBuffer.put(bytes, 18 + i * 8, 8).getDouble(0);
+            data[i] = byteBuffer.put(bytes, 16 + i * 8, 8).rewind().getDouble(0);
             byteBuffer.clear();
         }
         byteBuffer.clear();

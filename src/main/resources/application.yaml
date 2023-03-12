@@ -1,0 +1,5 @@
+tcp-server:
+  port: 19000
+  auto-start: true
+  schedule-step: 1
+  time-step: 0.001

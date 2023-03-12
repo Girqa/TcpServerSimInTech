@@ -3,8 +3,6 @@ package com.example.tcpserver.tcp_client;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.Socket;
@@ -13,9 +11,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+
+// TODO: develop like server
+
+/**
+ * DEPRECATED
+ */
 @Slf4j
-@Service
-@PropertySource("classpath:application.properties")
+//@Service
+//@PropertySource(value = "classpath:application.yaml", factory = YamlPropertySourceFactory.class)
 public class TcpClient implements Client{
     @Value("${tcp-server.port}")
     private int connectionPort;
