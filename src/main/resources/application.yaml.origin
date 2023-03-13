@@ -1,3 +1,5 @@
+processing-provider: rmsProcessingService   имя бина, осуществляющего обработку сигналов
+
 processing:
   time-step: 0.001      Шаг дискретезации АЦП
   cycle-inputs: 2       Число входных сигналов, переключаемых АЦП

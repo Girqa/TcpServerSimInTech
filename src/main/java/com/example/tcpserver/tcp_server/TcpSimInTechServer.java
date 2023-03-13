@@ -6,9 +6,14 @@ import com.example.tcpserver.configuration.ServerCfg;
 import com.example.tcpserver.model.ServerData;
 import com.example.tcpserver.services.ConverterService;
 import com.example.tcpserver.services.DataProcessingService;
+import com.example.tcpserver.services.RmsProcessingService;
+import com.example.tcpserver.utils.YamlPropertySourceFactory;
 import jakarta.annotation.PostConstruct;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -27,7 +32,9 @@ public class TcpSimInTechServer implements Server {
     private Future<?> clientsAccepting;
     private ScheduledFuture<?> clientConversation;
 
-    public TcpSimInTechServer(ConverterService converter, DataProcessingService processingService, ServerCfg config) {
+    public TcpSimInTechServer(ConverterService converter,
+                              @Qualifier("furrier-rms") DataProcessingService processingService,
+                              ServerCfg config) {
         this.converter = converter;
         this.processingService = processingService;
         this.config = config;
@@ -70,8 +77,8 @@ public class TcpSimInTechServer implements Server {
 
     private void startServerCommunication(Socket clientSocket) {
         try {
-            BufferedOutputStream writer = new BufferedOutputStream(clientSocket.getOutputStream(), 20);
-            BufferedInputStream reader = new BufferedInputStream(clientSocket.getInputStream(), 24);
+            BufferedOutputStream writer = new BufferedOutputStream(clientSocket.getOutputStream(), 44);
+            BufferedInputStream reader = new BufferedInputStream(clientSocket.getInputStream(), config.getInputBufferSize());
             long scheduleStep = config.getScheduleStep();
             byte[] buffer = new byte[config.getInputBufferSize()];
             ServerData serverData = processingService.getInitData();

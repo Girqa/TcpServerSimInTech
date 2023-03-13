@@ -13,6 +13,7 @@ import org.springframework.context.annotation.PropertySource;
 public class DataProcessingCfg {
     private double timeStep;
     private int cycleInputs;
+    private int outputs;
     private String bufferType;
     private int bufferSize;
 }

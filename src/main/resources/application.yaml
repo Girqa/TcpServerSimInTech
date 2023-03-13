@@ -1,8 +1,9 @@
 processing:
   time-step: 0.001
   cycle-inputs: 2
-  buffer-type: step
-  buffer-size: 20
+  outputs: 6
+  buffer-type: cycle
+  buffer-size: 10
 
 tcp-server:
   port: 19000
