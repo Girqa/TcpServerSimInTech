@@ -5,10 +5,12 @@ import com.example.tcpserver.model.ClientData;
 import com.example.tcpserver.model.ServerData;
 import com.example.tcpserver.model.buffers.Buffer;
 import com.example.tcpserver.utils.Solver;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 
-@Service("furrier")
+@Service
+@Profile("furrier")
 public class FurrierProcessingService extends DataProcessingService {
     protected int signalId;
 

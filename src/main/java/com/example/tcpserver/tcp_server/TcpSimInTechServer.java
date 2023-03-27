@@ -6,14 +6,9 @@ import com.example.tcpserver.configuration.ServerCfg;
 import com.example.tcpserver.model.ServerData;
 import com.example.tcpserver.services.ConverterService;
 import com.example.tcpserver.services.DataProcessingService;
-import com.example.tcpserver.services.RmsProcessingService;
-import com.example.tcpserver.utils.YamlPropertySourceFactory;
 import jakarta.annotation.PostConstruct;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -33,7 +28,7 @@ public class TcpSimInTechServer implements Server {
     private ScheduledFuture<?> clientConversation;
 
     public TcpSimInTechServer(ConverterService converter,
-                              @Qualifier("furrier-rms") DataProcessingService processingService,
+                              DataProcessingService processingService,
                               ServerCfg config) {
         this.converter = converter;
         this.processingService = processingService;
@@ -88,21 +83,25 @@ public class TcpSimInTechServer implements Server {
             clientConversation = ses.scheduleWithFixedDelay(() -> {
                 try {
                     if (clientSocket.isConnected()) {
-                        log.info("Model step begin");
+                        log.trace("Model step begin");
+
                         // Receiving model data
                         reader.read(buffer);
                         ClientData clientData = converter.convertFromBytes(buffer);
-                        log.info("Received {}", clientData);
+                        log.trace("Received {}", clientData);
+
                         // Input data processing
                         processingService.process(clientData, serverData);
+
                         // Sending model data
                         writer.write(converter.convertToBytes(serverData));
                         writer.flush();
-                        log.info("Sent {}", serverData);
-                        log.info("Model step end");
-                        System.out.println();
+                        log.trace("Sent {}", serverData);
+                        log.trace("Model step end");
+
                         if (clientData.getCommandID().equals(CommandID.DISCONNECT)) {
                             clientSocket.close();
+                            processingService.informOfClientDisconnection();
                             log.info("Disconnects client");
                             clientConversation.cancel(true);
                         }

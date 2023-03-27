@@ -4,9 +4,11 @@ import com.example.tcpserver.configuration.DataProcessingCfg;
 import com.example.tcpserver.model.ClientData;
 import com.example.tcpserver.model.ServerData;
 import com.example.tcpserver.model.buffers.Buffer;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-@Service("rms")
+@Service
+@Profile("rms")
 public class RmsProcessingService extends DataProcessingService{
     public RmsProcessingService(DataProcessingCfg cfg) {
         super(cfg);

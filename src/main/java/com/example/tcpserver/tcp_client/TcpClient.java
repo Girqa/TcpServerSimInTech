@@ -54,6 +54,6 @@ public class TcpClient implements Client{
     public void publish(String data) {
 //        writer.println(data);
 //        String response = reader.readLine();
-//        log.info("Response is {}", response);
+//        log.trace("Response is {}", response);
     }
 }

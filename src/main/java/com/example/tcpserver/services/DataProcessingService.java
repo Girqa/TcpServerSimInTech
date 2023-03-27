@@ -34,6 +34,7 @@ public abstract class DataProcessingService {
 
     public abstract void process(ClientData clientData, ServerData serverData);
 
+    public void informOfClientDisconnection(){};
     public void clearBuffer() {
         for (Buffer buffer: buffers) {
             buffer.clear();

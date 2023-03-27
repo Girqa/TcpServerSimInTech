@@ -5,15 +5,19 @@ import com.example.tcpserver.model.ClientData;
 import com.example.tcpserver.model.ServerData;
 import com.example.tcpserver.model.buffers.Buffer;
 import com.example.tcpserver.utils.Solver;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 
-@Service("furrier-rms")
+@Service
+@Profile("furrier-rms")
 public class FurrierRmsProcessingService extends DataProcessingService {
     protected int signalId;
+    protected double phaseLeakage;
     protected FurrierRmsProcessingService(DataProcessingCfg cfg) {
         super(cfg);
+        phaseLeakage = 360 / cycleInputs / bufferSize / 2;
     }
 
     @Override
@@ -28,7 +32,7 @@ public class FurrierRmsProcessingService extends DataProcessingService {
 
             double Fx = Solver.getFx(buffer.getArray(), w, dt * cycleInputs);
             double Fy = Solver.getFy(buffer.getArray(), w, dt * cycleInputs);
-            double fi = Math.atan(Fy / Fx) * 180 / Math.PI - 360 / cycleInputs / bufferSize * signalId;
+            double fi = Math.atan(Fy / Fx) * 180 / Math.PI - phaseLeakage * signalId;
             double A = Math.sqrt(Fx * Fx + Fy * Fy) / Math.sqrt(2);
 
 

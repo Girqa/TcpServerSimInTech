@@ -1,0 +1,16 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+package ru.smarteps.batterycontroller.grpc;
+
+option java_multiple_files = true;
+
+message DataSample {
+  string tag = 1;
+  double value = 2;
+}
+
+service MessageService {
+  rpc sendDataSample(DataSample) returns (google.protobuf.Empty);
+
+  rpc openDataStream(google.protobuf.Empty) returns (stream DataSample);
+}

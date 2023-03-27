@@ -1,7 +1,7 @@
 tcp-server:
   port: 19000
   auto-start: true
-  schedule-step: 200
+  schedule-step: 10
   input-buffer-size: 32
 
 spring:
@@ -14,15 +14,13 @@ spring:
     activate:
       on-profile: grpc
 
-processing:
-  time-step: 0.5
 client:
   meas:
     - U
     - Uphase
   ctrls:
     - PgenSet
-    - QgenSet
+    - QGenSet
 
 grpc:
   server:
